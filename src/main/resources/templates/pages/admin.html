@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments/layout :: head('Admin Panel')"></head>
+
+<body>
+
+<div th:replace="fragments/layout :: header"></div>
+
+<main>
+
+    <section>
+        <h2>Admin Panel</h2>
+        <p>Manage users and roles</p>
+    </section>
+
+    <section>
+        <h3>Users</h3>
+
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Name</th>
+                <th>Rank</th>
+                <th>Badge</th>
+                <th>Role</th>
+                <th>Actions</th>
+            </tr>
+
+            <tr th:each="user : ${users}">
+                <td th:text="${user.id}"></td>
+                <td th:text="${user.username}"></td>
+<!--                <td th:text="${user.name}"></td>-->
+                <td th:text="${user.rank}"></td>
+<!--                <td th:text="${user.badge}"></td>-->
+<!--                <td th:text="${user.role}"></td>-->
+
+                <td>
+
+                    <form th:action="@{/admin/promote}" method="post" style="display:inline;">
+                        <input type="hidden" name="userId" th:value="${user.id}" />
+                        <button class="success">Promote</button>
+                    </form>
+
+                    <form th:action="@{/admin/demote}" method="post" style="display:inline;">
+                        <input type="hidden" name="userId" th:value="${user.id}" />
+                        <button>Demote</button>
+                    </form>
+
+                    <form th:action="@{/admin/delete}" method="post" style="display:inline;">
+                        <input type="hidden" name="userId" th:value="${user.id}" />
+                        <button class="danger">Delete</button>
+                    </form>
+
+                </td>
+            </tr>
+
+        </table>
+    </section>
+
+</main>
+
+<div th:replace="fragments/layout :: footer"></div>
+
+</body>
+</html>

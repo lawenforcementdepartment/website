@@ -1,0 +1,300 @@
+/* ============================================= */
+/* Cyberpunk Law Enforcement UI (LED Theme)       */
+/* ============================================= */
+
+/* -------- ROOT DESIGN TOKENS -------- */
+:root {
+    --bg: #060b16;
+    --bg-alt: #0b1426;
+    --panel: #0f1c35;
+    --panel-glass: rgba(15, 28, 53, 0.65);
+
+    --primary: #1e90ff;
+    --primary-bright: #4db8ff;
+    --primary-dim: #0a3a7a;
+
+    --accent: #00d4ff;
+    --danger: #ff3b3b;
+    --success: #00ff9c;
+    --warning: #ffc107;
+
+    --text: #d8ecff;
+    --text-dim: #7fa6c9;
+
+    --border: rgba(77, 184, 255, 0.15);
+    --glow: 0 0 12px rgba(77, 184, 255, 0.6);
+
+    --radius: 12px;
+}
+
+/* -------- GLOBAL RESET -------- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: "Orbitron", "Segoe UI", sans-serif;
+    background:
+        radial-gradient(circle at 20% 20%, #0d1a33, transparent 40%),
+        radial-gradient(circle at 80% 0%, #081224, transparent 40%),
+        var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    letter-spacing: 0.5px;
+}
+
+/* -------- HEADER -------- */
+header {
+    background: var(--panel-glass);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 2rem;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 {
+    font-size: 1.4rem;
+    color: var(--primary-bright);
+    text-shadow: var(--glow);
+}
+
+/* -------- NAV -------- */
+nav {
+    display: flex;
+    gap: 1rem;
+}
+
+nav a {
+    color: var(--text-dim);
+    text-decoration: none;
+    padding: 0.4rem 0.6rem;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+nav a::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0%;
+    height: 2px;
+    background: var(--primary);
+    box-shadow: var(--glow);
+    transition: width 0.2s ease;
+}
+
+nav a:hover {
+    color: var(--primary-bright);
+}
+
+nav a:hover::after {
+    width: 100%;
+}
+
+/* -------- MAIN -------- */
+main {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: auto;
+}
+
+/* -------- PANELS / SECTIONS -------- */
+section {
+    background: var(--panel-glass);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+
+    box-shadow:
+        inset 0 0 10px rgba(0, 150, 255, 0.05),
+        0 0 20px rgba(0, 100, 255, 0.08);
+}
+
+/* -------- HEADINGS -------- */
+h2 {
+    color: var(--primary-bright);
+    margin-bottom: 0.5rem;
+    text-shadow: var(--glow);
+}
+
+h3 {
+    color: var(--accent);
+    margin-bottom: 0.3rem;
+}
+
+h4 {
+    color: var(--text);
+}
+
+/* -------- TEXT -------- */
+p {
+    color: var(--text-dim);
+    line-height: 1.5;
+}
+
+/* -------- CARDS -------- */
+.card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem;
+    margin-bottom: 1rem;
+
+    transition: all 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 20px rgba(77, 184, 255, 0.2);
+}
+
+/* -------- TABLES -------- */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--panel);
+}
+
+th {
+    background: rgba(30, 144, 255, 0.15);
+    color: var(--primary-bright);
+    text-align: left;
+    padding: 0.75rem;
+}
+
+td {
+    padding: 0.75rem;
+    border-bottom: 1px solid var(--border);
+}
+
+tr:hover {
+    background: rgba(77, 184, 255, 0.08);
+}
+
+/* -------- BUTTONS -------- */
+button {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dim));
+    border: none;
+    color: white;
+    padding: 0.6rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    box-shadow: 0 0 10px rgba(30, 144, 255, 0.4);
+}
+
+button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 0 15px rgba(77, 184, 255, 0.7);
+}
+
+button.danger {
+    background: linear-gradient(135deg, #ff3b3b, #990000);
+}
+
+button.success {
+    background: linear-gradient(135deg, #00ff9c, #007a4d);
+}
+
+/* -------- FORMS -------- */
+input, textarea, select {
+    width: 100%;
+    margin-bottom: 1rem;
+    padding: 0.6rem;
+
+    background: var(--bg-alt);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+
+    color: var(--text);
+}
+
+input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: var(--glow);
+}
+
+/* -------- BADGES -------- */
+.badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+}
+
+.badge.success {
+    background: rgba(0, 255, 156, 0.15);
+    color: var(--success);
+}
+
+.badge.danger {
+    background: rgba(255, 59, 59, 0.15);
+    color: var(--danger);
+}
+
+.badge.warning {
+    background: rgba(255, 193, 7, 0.15);
+    color: var(--warning);
+}
+
+/* -------- FOOTER -------- */
+footer {
+    text-align: center;
+    padding: 1rem;
+    border-top: 1px solid var(--border);
+    color: var(--text-dim);
+    margin-top: 2rem;
+}
+
+/* -------- SCROLLBAR -------- */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    box-shadow: var(--glow);
+}
+
+/* -------- OPTIONAL: SCANLINE EFFECT -------- */
+body::after {
+    content: "";
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.02),
+        rgba(255,255,255,0.02) 1px,
+        transparent 1px,
+        transparent 3px
+    );
+    opacity: 0.15;
+}
+
+/* -------- ANIMATIONS -------- */
+@keyframes glowPulse {
+    0% { text-shadow: 0 0 5px var(--primary); }
+    50% { text-shadow: 0 0 15px var(--primary-bright); }
+    100% { text-shadow: 0 0 5px var(--primary); }
+}
+
+.glow {
+    animation: glowPulse 2s infinite;
+}

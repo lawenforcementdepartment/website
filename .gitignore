@@ -58,4 +58,7 @@ build/
 .vscode/
 
 ### dotfiles ###
-^.*
+^.id*
+
+### H2 ###
+data/*
