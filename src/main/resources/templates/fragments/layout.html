@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!-- ===== HEAD (reusable) ===== -->
+<head th:fragment="head(title)">
+    <meta charset="UTF-8">
+    <title th:text="${title}">LED Portal</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" th:href="@{main.css}" />
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&display=swap" rel="stylesheet">
+
+    <!-- Optional HTMX -->
+    <!--    <script src="https://unpkg.com/htmx.org@1.9.10"></script>-->
+</head>
+
+<!-- ===== HEADER ===== -->
+<header th:fragment="header">
+    <h1>Law Enforcement Department</h1>
+    <nav>
+        <a th:href="@{/}">Home</a>
+        <a th:href="@{/news}">News</a>
+        <a th:href="@{/wanted}">Wanted</a>
+        <a th:href="@{/dashboard}">Dashboard</a>
+        <a th:href="@{/admin}" sec:authorize="hasRole('Admin')">Admin</a>
+    </nav>
+</header>
+
+<!-- ===== FOOTER ===== -->
+<footer th:fragment="footer">
+    <br>
+    <!-- ===== RIGHT SIDE USER PANEL ===== -->
+    <div class="user-panel">
+
+        <!-- Logged in -->
+        <div sec:authorize="isAuthenticated()">
+
+            <span class="user-info">
+                <span th:text="${rank} ?: Debug">Rank</span>
+                <span th:text="${name} ?: Debug">Name</span>,
+                <span th:text="${badge} ?: Debug">00000</span>
+            </span>
+            <br>
+            <br>
+            <form th:action="@{/logout}" method="post" style="display:inline;">
+                <button type="submit">Logout</button>
+            </form>
+        </div>
+
+        <!-- Logged out -->
+        <div sec:authorize="isAnonymous()">
+            <a th:href="@{/login}">
+                <button>Login</button>
+            </a>
+            <a th:href="@{/register}">
+                <button class="success">Register</button>
+            </a>
+        </div>
+
+    </div>
+    <br>
+    <br>
+    <p>&copy; LED - Empire Rising</p>
+</footer>
+
+</html>
