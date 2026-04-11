@@ -53,15 +53,6 @@ public class AdminController {
     @PostMapping("/demote")
     public String demote(@RequestParam Long userId) {
         Individual individual = individualRepository.findById(userId).orElseThrow();
-
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        assert auth != null;
-        String currentUsername = auth.getName();
-
-        if (individual.getUsername().equals(currentUsername)) {
-            return "redirect:/admin?error=self";
-        }
-
         individual.setRank(Rank.values()[individual.getRank().ordinal() + 1]);
         individualRepository.save(individual);
         return "redirect:/admin";
@@ -70,15 +61,6 @@ public class AdminController {
     @PostMapping("/delete")
     public String delete(@RequestParam Long userId) {
         Individual individual = individualRepository.findById(userId).orElseThrow();
-
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        assert auth != null;
-        String currentUsername = auth.getName();
-
-        if (individual.getUsername().equals(currentUsername)) {
-            return "redirect:/admin?error=self";
-        }
-
         individualRepository.deleteById(userId);
         return "redirect:/admin";
     }
