@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Optional;
+
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
@@ -30,21 +32,35 @@ public class AdminController {
     }
 
     @PostMapping("/**")
-    public void idiotNet(@RequestParam Long targetUserId) {
-        Individual individual = individualRepository.findById(targetUserId).orElseThrow();
-
+    public void idiotNet(@RequestParam Long userId) {
+        Individual individual = individualRepository.findById(userId).orElseThrow();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        assert auth != null;
-        String currentUsername = auth.getName();
 
+        if (auth == null) {
+            throw new IdiotException("No auth context, how?");
+        }
+
+        String currentUsername = auth.getName();
         if (individual.getUsername().equals(currentUsername)) {
             throw new IdiotException("Can't do that to yourself");
         }
     }
 
     @PostMapping("/promote")
-    public String promote(@RequestParam Long targetUserId) {
-        Individual individual = individualRepository.findById(targetUserId).orElseThrow();
+    public String promote(@RequestParam Long userId) {
+        Individual individual = individualRepository.findById(userId).orElseThrow();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        if (auth == null) {
+            throw new IdiotException("No auth context, how?");
+        }
+
+        Optional<Individual> callingUser = individualRepository.findByUsername(auth.getName());
+
+        if (callingUser.isEmpty() || callingUser.get().getRank().ordinal() >= individual.getRank().ordinal()) {
+            throw new IdiotException("Can't promote above own rank");
+        }
+
         individual.setRank(Rank.values()[individual.getRank().ordinal() - 1]);
         individualRepository.save(individual);
         return "redirect:/admin";
@@ -53,6 +69,22 @@ public class AdminController {
     @PostMapping("/demote")
     public String demote(@RequestParam Long userId) {
         Individual individual = individualRepository.findById(userId).orElseThrow();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        if (auth == null) {
+            throw new IdiotException("No auth context, how?");
+        }
+
+        Optional<Individual> callingUser = individualRepository.findByUsername(auth.getName());
+
+        if (callingUser.isEmpty() || callingUser.get().getRank().ordinal() >= individual.getRank().ordinal()) {
+            throw new IdiotException("Can't demote users of equal or higher rank");
+        }
+
+        if (individual.getRank().ordinal() >= Rank.values().length - 1) {
+            throw new IdiotException("Can't exceed " + individual.getRank());
+        }
+
         individual.setRank(Rank.values()[individual.getRank().ordinal() + 1]);
         individualRepository.save(individual);
         return "redirect:/admin";

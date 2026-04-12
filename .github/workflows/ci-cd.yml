@@ -1,0 +1,110 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+
+  # =========================
+  # 1. RUN TESTS
+  # =========================
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Cache Maven
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+
+      - name: Run Tests
+        run: mvn clean test
+
+  # =========================
+  # 2. BUILD DOCKER IMAGE
+  # =========================
+  build:
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build Docker Image
+        run: docker build -t led-app .
+
+      - name: Save Image
+        run: docker save led-app | gzip > led-app.tar.gz
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-image
+          path: led-app.tar.gz
+
+  # =========================
+  # 3. DEPLOY TO VPS
+  # =========================
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Download Image
+        uses: actions/download-artifact@v4
+        with:
+          name: docker-image
+
+      - name: Copy Image to VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          source: "led-app.tar.gz"
+          target: "~/"
+
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            # Clone or update repo
+            if [ -d website ]; then
+              cd website
+              git pull --rebase -Xours
+            else
+              git clone git@github.com:lawenforcementdepartment/website.git
+              cd website
+            fi
+
+            # Load Docker image
+            docker load < ~/led-app.tar.gz
+
+            # Stop existing container
+            docker stop led-app || true
+            docker rm led-app || true
+
+            # Run new container
+            docker run -d \
+              -p 8080:8080 \
+              -v led-data:/data \
+              --name led-app \
+              led-app

@@ -20,8 +20,16 @@ public class Individual implements Serializable {
     @Length(min = 2, max = 42)
     @Column(unique = true, nullable = false)
     private String username;
+
     @Email
+    @Column(nullable = false, unique = true)
     private String email;
+
+    @Column(nullable = false)
+    private boolean enabled = false; // email verification
+
+    @Column(unique = true)
+    private String verificationToken;
 
     @Column(nullable = false)
     @JsonIgnore
