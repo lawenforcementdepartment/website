@@ -1,6 +1,6 @@
 ledenforcementdepartment.com {
 
-    reverse_proxy website:8080
+    reverse_proxy led-website:8080
 
     encode gzip
 
