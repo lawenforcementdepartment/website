@@ -1,4 +1,4 @@
-ledenforcementdepartment.com {
+lawenforcementdepartment.com {
 
     reverse_proxy led-website:8080
 
