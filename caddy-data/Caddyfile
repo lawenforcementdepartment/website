@@ -1,0 +1,12 @@
+ledenforcementdepartment.com {
+
+    reverse_proxy website:8080
+
+    encode gzip
+
+    header {
+        X-Content-Type-Options nosniff
+        X-Frame-Options SAMEORIGIN
+        X-XSS-Protection "1; mode=block"
+    }
+}
