@@ -16,13 +16,13 @@ public class EmailConfig {
     @Value("SMTP_HOST")
     private String smtpHost;
     @Value("SMTP_PORT")
-    private Integer smtpPort;
+    private String smtpPort;
 
     @Bean
     public JavaMailSender getJavaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost(smtpHost);
-        mailSender.setPort(smtpPort);
+        mailSender.setPort(Integer.parseInt(smtpPort));
 
         mailSender.setUsername(smtpUsername);
         mailSender.setPassword(smtpPassword);
