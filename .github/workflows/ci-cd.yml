@@ -44,16 +44,16 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build Docker Image
-        run: docker build -t led-app .
+        run: docker build -t led-website .
 
       - name: Save Image
-        run: docker save led-app | gzip > led-app.tar.gz
+        run: docker save led-website | gzip > led-website.tar.gz
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: docker-image
-          path: led-app.tar.gz
+          name: led-website
+          path: led-website.tar.gz
 
   # =========================
   # 3. DEPLOY TO VPS
@@ -66,7 +66,7 @@ jobs:
       - name: Download Image
         uses: actions/download-artifact@v4
         with:
-          name: docker-image
+          name: led-website
 
       - name: Copy Image to VPS
         uses: appleboy/scp-action@v0.1.7
@@ -75,16 +75,22 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          source: "led-app.tar.gz"
+          source: "led-website.tar.gz"
           target: "~/"
 
       - name: Deploy over SSH
         uses: appleboy/ssh-action@v1
+        env:
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
+          envs: SMTP_HOST, SMTP_PORT, SMTP_USERNAME, SMTP_PASSWORD
           script: |
             # Clone or update repo
             if [ -d website ]; then
@@ -96,11 +102,11 @@ jobs:
             fi
 
             # Load Docker image
-            docker load < ~/led-app.tar.gz
+            docker load < ~/led-website.tar.gz
 
             # Stop existing container
-            docker stop led-app || true
-            docker rm led-app || true
+            docker stop led-website || true
+            docker rm led-website || true
             
             # Update env secrets
             SMTP_HOST=${{ secrets.SMTP_HOST }}
