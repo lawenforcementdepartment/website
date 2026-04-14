@@ -26,7 +26,7 @@ public class Individual implements Serializable {
     private String email;
 
     @Column(nullable = false)
-    private boolean enabled = false; // email verification
+    private boolean emailVerified = false;
 
     @Column(unique = true)
     private String verificationToken;

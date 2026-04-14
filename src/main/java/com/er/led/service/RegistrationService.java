@@ -1,5 +1,6 @@
 package com.er.led.service;
 
+import com.er.led.exception.RegistrationException;
 import com.er.led.model.Individual;
 import com.er.led.repository.IndividualRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,10 +23,13 @@ public class RegistrationService {
         this.emailService = emailService;
     }
 
-    public void register(String username, String email, String password, String badge) {
-
+    public void register(String username, String email, String password) {
         if (repository.findByUsername(username).isPresent()) {
             throw new RuntimeException("Username already exists");
+        }
+
+        if (repository.findByEmail(email).isPresent()) {
+            throw new RegistrationException("Email already exists");
         }
 
         Individual user = new Individual();
@@ -33,7 +37,7 @@ public class RegistrationService {
         user.setEmail(email);
         user.setPasswordHash(passwordEncoder.encode(password));
         user.setVerificationToken(UUID.randomUUID().toString());
-        user.setEnabled(false);
+        user.setEmailVerified(false);
 
         repository.save(user);
 
