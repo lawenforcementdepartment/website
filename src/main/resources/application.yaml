@@ -17,7 +17,7 @@ spring:
       ddl-auto: update
   mail:
     host: ${SMTP_HOST:test}
-    port: ${SMTP_PORT:test}
+    port: ${SMTP_PORT:22}
     username: ${SMTP_USERNAME:test}
     password: ${SMTP_PASSWORD:test}
     properties:
