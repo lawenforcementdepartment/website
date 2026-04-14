@@ -1,0 +1,37 @@
+version: "3.8"
+
+services:
+
+  website:
+    build: .
+    container_name: led-website
+    restart: unless-stopped
+    volumes:
+      - led-data:/data
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:h2:file:/data/led-db
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.h2.Driver
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT}
+      SMTP_USERNAME: ${SMTP_USERNAME}
+      SMTP_PASSWORD: ${SMTP_PASSWORD}
+
+  caddy:
+    image: caddy:2
+    container_name: led-caddy
+    restart: unless-stopped
+    depends_on:
+      - website
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy-data:/data
+      - caddy-config:/config
+
+volumes:
+  led-data:
+  caddy-data:
+  caddy-config:

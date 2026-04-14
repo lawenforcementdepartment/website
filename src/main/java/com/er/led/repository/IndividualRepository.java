@@ -16,4 +16,6 @@ public interface IndividualRepository extends JpaRepository<Individual, Long> {
     Optional<Individual> findByUsername(String username);
 
     Optional<Individual> findByVerificationToken(String token);
+
+    Optional<Individual> findByEmail(String email);
 }

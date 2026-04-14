@@ -101,10 +101,18 @@ jobs:
             # Stop existing container
             docker stop led-app || true
             docker rm led-app || true
+            
+            # Update env secrets
+            SMTP_HOST=${{ secrets.SMTP_HOST }}
+            SMTP_PORT=${{ secrets.SMTP_PORT }}
+            SMTP_USERNAME=${{ secrets.SMTP_USERNAME }}
+            SMTP_PASSWORD=${{ secrets.SMTP_PASSWORD }}
 
             # Run new container
-            docker run -d \
-              -p 8080:8080 \
-              -v led-data:/data \
-              --name led-app \
-              led-app
+            docker-compose up -d
+            
+            # Unset secrets
+            unset SMTP_HOST
+            unset SMTP_PORT
+            unset SMTP_USERNAME
+            unset SMTP_PASSWORD

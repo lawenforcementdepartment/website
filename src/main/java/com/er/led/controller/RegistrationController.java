@@ -16,11 +16,10 @@ public class RegistrationController {
     }
 
     @PostMapping("/register")
-    public String register(@RequestParam String username, @RequestParam String email, @RequestParam String password,
-            @RequestParam String badge, Model model) {
+    public String register(@RequestParam String username, @RequestParam String email, @RequestParam String password, Model model) {
 
         try {
-            registrationService.register(username, email, password, badge);
+            registrationService.register(username, email, password);
             model.addAttribute("message", "Registration successful. Check your email.");
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());

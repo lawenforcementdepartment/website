@@ -3,8 +3,8 @@ spring:
     name: led
   datasource:
     url: jdbc:h2:file:./data/db
-    username: ${DB_USER:polis}
-    password: ${DB_PASSWORD:polis}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
     driverClassName: org.h2.Driver
   sql:
     init:
@@ -15,3 +15,14 @@ spring:
     generate-ddl: true
     hibernate:
       ddl-auto: update
+  mail:
+    host: ${SMTP_HOST}
+    port: ${SMTP_PORT}
+    username: ${SMTP_USERNAME}
+    password: ${SMTP_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
