@@ -29,6 +29,7 @@ services:
     volumes:
       - caddy-data:/data
       - caddy-config:/config
+      - ./caddy-conf:/etc/caddy
 
 volumes:
   led-data:
